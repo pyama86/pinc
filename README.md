@@ -1,10 +1,23 @@
-# pic
-
-
-
+# [WIP]pic
 ## Description
+pic is split ~/.ssh/config
 
 ## Usage
+```
+$ pic init
+=> create dir ~/.ssh/conf.d
+   create file ~/.ssh/pic.yml
+$ pic merge
+ merge configs  [~/.ssh/config and ~/.ssh/conf.d and ~/.ssh/pic.yml]
+```
+
+* pic.yml
+```yaml
+includes:
+- ~/src/github.com/org/repos/share_ssh_config
+- ~/src/github.com/org/repos/serviceA_ssh_config
+- ~/src/github.com/org/repos/serviceB_ssh_config
+```
 
 ## Install
 
@@ -23,7 +36,3 @@ $ go get -d github.com/pyama86/pic
 1. Run test suite with the `go test ./...` command and confirm that it passes
 1. Run `gofmt -s`
 1. Create a new Pull Request
-
-## Author
-
-[pyama86](https://github.com/pyama86)
