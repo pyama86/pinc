@@ -1,17 +1,17 @@
-# pic
+# pinc
 ## Description
-pic is split ~/.ssh/config
+pinc is split ~/.ssh/config
 
 ## Usage
 ```
-$ pic init
+$ pinc init
 => create dir ~/.ssh/conf.d
-   create file ~/.ssh/pic.yml
-$ pic gen
- merge configs  [~/.ssh/config and ~/.ssh/conf.d and ~/.ssh/pic.yml]
+   create file ~/.ssh/pinc.yml
+$ pinc gen
+ merge configs  [~/.ssh/config and ~/.ssh/conf.d and ~/.ssh/pinc.yml]
 ```
 
-* pic.yml
+* pinc.yml
 ```yaml
 includes:
 - ~/src/github.com/org/repos/share_ssh_config
@@ -22,19 +22,19 @@ includes:
 ## Install
 ### homebrew
 ```
-$ brew tap pyama86/pic
-$ brew install pic
+$ brew tap pyama86/pinc
+$ brew install pinc
 $ exec $SHELL -l
 ```
 ### go get
 
 ```bash
-$ go get -d github.com/pyama86/pic
+$ go get -d github.com/pyama86/pinc
 ```
 
 ## Contribution
 
-1. Fork ([https://github.com/pyama86/pic/fork](https://github.com/pyama86/pic/fork))
+1. Fork ([https://github.com/pyama86/pinc/fork](https://github.com/pyama86/pinc/fork))
 1. Create a feature branch
 1. Commit your changes
 1. Rebase your local changes against the master branch

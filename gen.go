@@ -15,7 +15,7 @@ import (
 var cmdGen = &Command{
 	Run:       runGen,
 	UsageLine: "gen ",
-	Short:     "generate ~/.ssh/config from ~/.ssh/conf.d and ~/.ssh/pic.yml",
+	Short:     "generate ~/.ssh/config from ~/.ssh/conf.d and ~/.ssh/pinc.yml",
 	Long: `
 
 	`,
@@ -33,13 +33,13 @@ func runGen(args []string) int {
 
 	buf, err := ioutil.ReadFile(PIC_CONFIG)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "pic: %s\n", err)
+		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 	}
 
 	m := make(map[string][]string)
 	err = yaml.Unmarshal(buf, &m)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "pic: %s\n", err)
+		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 		return 1
 	}
 
@@ -49,7 +49,7 @@ func runGen(args []string) int {
 
 	file, err := os.Create(SSH_CONFIG)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "pic: %s\n", err)
+		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 	}
 	defer file.Close()
 	file.Write(([]byte)(mergeContents))
@@ -70,13 +70,13 @@ func readFiles(root string) string {
 
 			rel, err := filepath.Rel(root, path)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "pic: %s\n", err)
+				fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 				return nil
 			}
 
 			fp, err := os.Open(root + "/" + rel)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "pic: %s\n", err)
+				fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 				return nil
 			}
 			defer fp.Close()
@@ -93,7 +93,7 @@ func readFiles(root string) string {
 				if err == io.EOF {
 					break
 				} else if err != nil {
-					fmt.Fprintf(os.Stderr, "pic: %s\n", err)
+					fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 					return nil
 				}
 			}

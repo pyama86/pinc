@@ -13,7 +13,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 )
 
-// A Command is an implementation of a pic command
+// A Command is an implementation of a pinc command
 type Command struct {
 	// Run runs the command.
 	// The args are the arguments after the command name.
@@ -23,10 +23,10 @@ type Command struct {
 	// The first word in the line is taken to be the command name.
 	UsageLine string
 
-	// Short is the short description shown in the 'pic help' output.
+	// Short is the short description shown in the 'pinc help' output.
 	Short string
 
-	// Long is the long message shown in the 'pic help <this-command>' output.
+	// Long is the long message shown in the 'pinc help <this-command>' output.
 	Long string
 
 	// Flag is a set of flags specific to this command.
@@ -49,8 +49,8 @@ func (c *Command) Usage() {
 	os.Exit(2)
 }
 
-// Commands lists the available commands and help topics.
-// The order here is the order in which they are printed by 'pic help'.
+// Commands lists the available commands and help topincs.
+// The order here is the order in which they are printed by 'pinc help'.
 var commands = []*Command{
 	cmdInit,
 	cmdGen,
@@ -62,7 +62,7 @@ func initConfig() {
 	SSH_CONFIG = homeDir + "/.ssh/config"
 	SSH_CONFIG_DIR = homeDir + "/.ssh/conf.d"
 	BACKUP_SSH_CONFIG = homeDir + "/.ssh/conf.d/base_config"
-	PIC_CONFIG = homeDir + "/.ssh/pic.yml"
+	PIC_CONFIG = homeDir + "/.ssh/pinc.yml"
 }
 
 func main() {
@@ -92,25 +92,25 @@ func main() {
 		}
 	}
 
-	fmt.Fprintf(os.Stderr, "pic: unknown subcommand %q\nRun ' pic help' for usage.\n", args[0])
+	fmt.Fprintf(os.Stderr, "pinc: unknown subcommand %q\nRun ' pinc help' for usage.\n", args[0])
 	os.Exit(2)
 }
 
-var usageTemplate = `pic is a tool for 
+var usageTemplate = `pinc is a tool for 
 
 Usage:
 
-	pic command [arguments]
+	pinc command [arguments]
 
 The commands are:
 {{range .}}
 	{{.Name | printf "%-11s"}} {{.Short}}{{end}}
 
-Use "pic help [command]" for more information about a command.
+Use "pinc help [command]" for more information about a command.
 
 `
 
-var helpTemplate = `usage: pic {{.UsageLine}}
+var helpTemplate = `usage: pinc {{.UsageLine}}
 
 {{.Long | trim}}
 `
@@ -140,12 +140,12 @@ func usage() {
 func help(args []string) {
 	if len(args) == 0 {
 		printUsage(os.Stdout)
-		// not exit 2: succeeded at 'pic help'.
+		// not exit 2: succeeded at 'pinc help'.
 		return
 	}
 	if len(args) != 1 {
-		fmt.Fprintf(os.Stderr, "usage: pic help command\n\nToo many arguments given.\n")
-		os.Exit(2) // failed at 'pic help'
+		fmt.Fprintf(os.Stderr, "usage: pinc help command\n\nToo many arguments given.\n")
+		os.Exit(2) // failed at 'pinc help'
 	}
 
 	arg := args[0]
@@ -153,11 +153,11 @@ func help(args []string) {
 	for _, cmd := range commands {
 		if cmd.Name() == arg {
 			tmpl(os.Stdout, helpTemplate, cmd)
-			// not exit 2: succeeded at 'pic help cmd'.
+			// not exit 2: succeeded at 'pinc help cmd'.
 			return
 		}
 	}
 
-	fmt.Fprintf(os.Stderr, "Unknown help topic %#q.  Run 'pic help'.\n", arg)
-	os.Exit(2) // failed at 'pic help cmd'
+	fmt.Fprintf(os.Stderr, "Unknown help topinc %#q.  Run 'pinc help'.\n", arg)
+	os.Exit(2) // failed at 'pinc help cmd'
 }
