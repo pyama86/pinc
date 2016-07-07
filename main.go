@@ -55,14 +55,14 @@ var commands = []*Command{
 	cmdInit,
 	cmdGen,
 }
-var SSH_CONFIG, SSH_CONFIG_DIR, BACKUP_SSH_CONFIG, PIC_CONFIG string
+var SSH_CONFIG, SSH_CONFIG_DIR, BACKUP_SSH_CONFIG, PINC_CONFIG string
 
 func initConfig() {
 	homeDir, _ := homedir.Dir()
 	SSH_CONFIG = homeDir + "/.ssh/config"
 	SSH_CONFIG_DIR = homeDir + "/.ssh/conf.d"
 	BACKUP_SSH_CONFIG = homeDir + "/.ssh/conf.d/base_config"
-	PIC_CONFIG = homeDir + "/.ssh/pinc.yml"
+	PINC_CONFIG = homeDir + "/.ssh/pinc.yml"
 }
 
 func main() {

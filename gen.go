@@ -31,11 +31,14 @@ func runGen(args []string) int {
 	var mergeContents string
 	mergeContents = readFiles(SSH_CONFIG_DIR + "/")
 
-	buf, err := ioutil.ReadFile(PIC_CONFIG)
+	// read ~/.ssh/conf.d/*
+	buf, err := ioutil.ReadFile(PINC_CONFIG)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+		return 1
 	}
 
+	// read ~/.ssh/pinc.yml
 	m := make(map[string][]string)
 	err = yaml.Unmarshal(buf, &m)
 	if err != nil {
@@ -47,9 +50,11 @@ func runGen(args []string) int {
 		mergeContents += readFiles(string(p))
 	}
 
+	// write ~/.ssh/config
 	file, err := os.Create(SSH_CONFIG)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+		return 1
 	}
 	defer file.Close()
 	file.Write(([]byte)(mergeContents))
@@ -66,6 +71,7 @@ func readFiles(root string) string {
 			}
 			var c string
 			var flg bool
+			flg = false
 			r := regexp.MustCompile(`^Host`)
 
 			rel, err := filepath.Rel(root, path)
@@ -108,7 +114,7 @@ func readFiles(root string) string {
 		})
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 	}
 	return mergeContents
 }
