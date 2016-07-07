@@ -7,7 +7,7 @@ pic is split ~/.ssh/config
 $ pic init
 => create dir ~/.ssh/conf.d
    create file ~/.ssh/pic.yml
-$ pic merge
+$ pic gen 
  merge configs  [~/.ssh/config and ~/.ssh/conf.d and ~/.ssh/pic.yml]
 ```
 
