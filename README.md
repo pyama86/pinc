@@ -20,8 +20,12 @@ includes:
 ```
 
 ## Install
-
-To install, use `go get`:
+### homebrew
+```
+$ brew tap pyama86/pic
+$ brew install pic
+```
+### go get
 
 ```bash
 $ go get -d github.com/pyama86/pic
