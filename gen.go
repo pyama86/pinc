@@ -15,7 +15,7 @@ import (
 var cmdGen = &Command{
 	Run:       runGen,
 	UsageLine: "gen ",
-	Short:     "genelate ~/.ssh/config",
+	Short:     "generate ~/.ssh/config from ~/.ssh/conf.d and ~/.ssh/pic.yml",
 	Long: `
 
 	`,
