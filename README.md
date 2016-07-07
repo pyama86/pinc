@@ -7,7 +7,7 @@ pic is split ~/.ssh/config
 $ pic init
 => create dir ~/.ssh/conf.d
    create file ~/.ssh/pic.yml
-$ pic gen 
+$ pic gen
  merge configs  [~/.ssh/config and ~/.ssh/conf.d and ~/.ssh/pic.yml]
 ```
 
@@ -24,6 +24,7 @@ includes:
 ```
 $ brew tap pyama86/pic
 $ brew install pic
+$ exec $SHELL -l
 ```
 ### go get
 
