@@ -24,7 +24,6 @@ includes:
 ```
 $ brew tap pyama86/pinc
 $ brew install pinc
-$ exec $SHELL -l
 ```
 ### go get
 
