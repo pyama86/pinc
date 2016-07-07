@@ -1,4 +1,4 @@
-# [WIP]pic
+# pic
 ## Description
 pic is split ~/.ssh/config
 
