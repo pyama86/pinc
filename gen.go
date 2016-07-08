@@ -2,12 +2,17 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
+
+	"github.com/higanworks/envmap"
 
 	"gopkg.in/yaml.v2"
 )
@@ -28,6 +33,7 @@ func init() {
 
 // runGen executes gen command and return exit code.
 func runGen(args []string) int {
+	envs := envmap.All()
 	var mergeContents string
 	mergeContents = readFiles(SSH_CONFIG_DIR + "/")
 
@@ -47,7 +53,13 @@ func runGen(args []string) int {
 	}
 
 	for _, p := range m["include"] {
-		mergeContents += readFiles(string(p))
+		var buf bytes.Buffer
+		tpl := template.Must(template.New("t").Parse(string(p)))
+		if err := tpl.Execute(&buf, envs); err != nil {
+			fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+			return 1
+		}
+		mergeContents += readFiles(buf.String())
 	}
 
 	// write ~/.ssh/config
@@ -64,57 +76,75 @@ func runGen(args []string) int {
 
 func readFiles(root string) string {
 	var mergeContents string
-	err := filepath.Walk(root,
-		func(path string, info os.FileInfo, err error) error {
-			if info.IsDir() {
-				return nil
-			}
-			var c string
-			var flg bool
-			flg = false
-			r := regexp.MustCompile(`^Host`)
 
-			rel, err := filepath.Rel(root, path)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
-				return nil
-			}
+	if root[0:4] == "http" {
+		res, err := http.Get(root)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+			return ""
+		}
+		defer res.Body.Close()
+		body, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+			return ""
+		}
+		return string(body)
+	} else {
 
-			fp, err := os.Open(root + "/" + rel)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
-				return nil
-			}
-			defer fp.Close()
-
-			reader := bufio.NewReaderSize(fp, 4096)
-			for {
-				line, _, err := reader.ReadLine()
-				sl := string(line) + "\n"
-				c += sl
-				if r.MatchString(sl) {
-					flg = true
+		err := filepath.Walk(root,
+			func(path string, info os.FileInfo, err error) error {
+				if info.IsDir() {
+					return nil
 				}
+				var c string
+				var flg bool
+				flg = false
+				r := regexp.MustCompile(`^Host`)
 
-				if err == io.EOF {
-					break
-				} else if err != nil {
+				rel, err := filepath.Rel(root, path)
+				if err != nil {
 					fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
 					return nil
 				}
-			}
 
-			if flg {
-				mergeContents += string(c)
-			} else {
+				fp, err := os.Open(root + "/" + rel)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+					return nil
+				}
+				defer fp.Close()
+
+				reader := bufio.NewReaderSize(fp, 4096)
+				for {
+					line, _, err := reader.ReadLine()
+					sl := string(line) + "\n"
+					c += sl
+					if r.MatchString(sl) {
+						flg = true
+					}
+
+					if err == io.EOF {
+						break
+					} else if err != nil {
+						fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+						return nil
+					}
+				}
+
+				if flg {
+					mergeContents += string(c)
+				} else {
+					return nil
+				}
+				fmt.Println("load: " + root + rel)
 				return nil
-			}
-			fmt.Println("load: " + root + rel)
-			return nil
-		})
+			})
 
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "pinc: %s\n", err)
+			return ""
+		}
 	}
 	return mergeContents
 }
